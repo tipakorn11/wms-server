@@ -1,0 +1,59 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+//stock
+model Category_sub_level_1 {
+  id                   Int                    @id @default(autoincrement())
+  name                 String                 @unique
+  sub_level_2_id_list  Int[]
+  desc                 String?
+  items                Item[]
+  Category_sub_level_2 Category_sub_level_2[] @relation("SubLevel2ToSubLevel1")
+}
+
+model Category_sub_level_2 {
+  id                   Int                    @id @default(autoincrement())
+  name                 String                 @unique
+  desc                 String?
+  Category_sub_level_1 Category_sub_level_1[] @relation("SubLevel2ToSubLevel1")
+}
+
+model Item {
+  id                      Int                  @id @default(autoincrement())
+  name                    String               @unique
+  category_sub_level_1    Category_sub_level_1? @relation(fields: [category_sub_level_1_id], references: [id])
+  category_sub_level_1_id Int
+  item_img                String?
+  desc                    String?
+  amount                  Int
+  price                   Float
+  cost_price              Float
+}
+
+// model User {
+//   id    Int     @id @default(autoincrement())
+//   email String  @unique
+//   name  String?
+//   posts Post[]
+// }
+
+// model Post {
+//   id        Int     @id @default(autoincrement())
+//   title     String
+//   content   String?
+//   published Boolean @default(false)
+//   author    User?   @relation(fields: [authorId], references: [id])
+//   authorId  Int?
+// }
